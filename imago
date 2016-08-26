@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+import cProfile
 
 """Go image recognition."""
 
 from src import imago
 
-imago.main()
+cProfile.run('imago.main()', sort='cumtime')
+#imago.main()
