@@ -59,6 +59,7 @@ def run_ransac(image):
             if image_l[x, y] > 128:
                 data.append((x, y))
                 if y < 30:
+                    # FIXME: what's this?
                     data.append((width - x, y + height))
 
     dist = 3 
