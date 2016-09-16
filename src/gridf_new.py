@@ -202,6 +202,8 @@ def find(lines, size, show_all, do_something, logger):
     Last three parameters serves for debugging.
     """
 
+    # Find all the intersection points between the lines in lines[0]
+    # and lines[1].
     new_lines1 = map(lambda l: Line.from_ad(l, size), lines[0])
     new_lines2 = map(lambda l: Line.from_ad(l, size), lines[1])
     for l1 in new_lines1:
@@ -212,6 +214,7 @@ def find(lines, size, show_all, do_something, logger):
             l1.points.append(p)
             l2.points.append(p)
 
+    # `points` is a list of lists of intersection points on the lines
     points = [l.points for l in new_lines1]
 
     def dst_p(x, y):
