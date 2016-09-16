@@ -6,39 +6,17 @@ import pygame
 
 from geometry import l2ad, line, intersection
 from manual_lines import *
+import debug_display
 
 class UserQuitError(Exception):
     pass
-
-class Screen:
-    # TODO isn't this a duplicate of something?
-    def __init__(self, res):
-        pygame.init()
-        pygame.display.set_mode(res)
-        pygame.display.set_caption("Imago manual mode")
-        self._screen = pygame.display.get_surface()
-
-    def display_picture(self, img):
-        pg_img = pygame.image.frombuffer(img.tobytes(), img.size, img.mode)
-        self._screen.blit(pg_img, (0, 0))
-        pygame.display.flip()
-
-
-def display_instr():
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                raise UserQuitError 
-            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
-                return 
 
 def find_lines(im_orig):
     # TODO rename, refactor, comment
 
     im = im_orig.copy()
 
-    screen = Screen((620, 350))
+    screen = debug_display.Screen((620, 350))
 
     font = pygame.font.Font(None, 25)
     instructions = ["Imago manual mode", "",   
@@ -56,7 +34,7 @@ def find_lines(im_orig):
 
     pygame.display.flip()
 
-    display_instr()
+    screen.wait_for_click_or_keypress()
 
     pygame.display.set_mode(im.size)
 
