@@ -121,8 +121,7 @@ def main():
         else:
             lines, l1, l2, bounds, hough = linef.find_lines(image, do_something, logger)
 
-        grid, lines = gridf.find(lines, image.size, l1, l2, bounds, hough,
-                                 show_all, do_something, logger)
+        grid, lines = gridf.find(lines, image.size, show_all, do_something, logger)
         if show_all:
             im_g = image.copy()
             draw = ImageDraw.Draw(im_g)

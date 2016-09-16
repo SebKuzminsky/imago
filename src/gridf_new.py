@@ -189,7 +189,7 @@ def score(lines, points):
     return score
 
 
-def find(lines, size, l1, l2, bounds, hough, show_all, do_something, logger):
+def find(lines, size, show_all, do_something, logger):
     """Find the best grid given the *lines* and *size* of the image.
 
     lines: A list containing two lists of lines detected in the image.
@@ -199,9 +199,7 @@ def find(lines, size, l1, l2, bounds, hough, show_all, do_something, logger):
 
     size: A list of (width, height) of the input image, in pixels.
 
-    Last three parameters serves for debugging, *l1*, *l2*, *bounds* and *hough*
-    are here for compatibility with older version of gridf, so they can be
-    easily exchanged, tested and compared.
+    Last three parameters serves for debugging.
     """
 
     new_lines1 = map(lambda l: Line.from_ad(l, size), lines[0])
