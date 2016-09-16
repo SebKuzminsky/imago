@@ -90,10 +90,6 @@ def find_lines(image, show_image, logger):
 
     lines = map(hough.lines_from_list, r_lines)
 
-    # TODO refactor gridf to get rid of this:
-    bounds = sum(map(lambda l: [l[0], l[-1]], r_lines), []) 
-    # sum(list, []) = flatten list
-
     # TODO do this only if show_all is true:
     image_g = image.copy()
     draw = ImageDraw.Draw(image_g)
@@ -102,7 +98,7 @@ def find_lines(image, show_image, logger):
     show_image(image_g, "lines")
 
 
-    return lines, l1, l2, bounds, hough # TODO
+    return lines
 
 def line_from_angl_dist((angle, distance), size):
     """Take *angle* and *distance* (from the center of the image) of a line and

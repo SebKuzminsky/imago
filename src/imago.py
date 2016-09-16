@@ -109,17 +109,17 @@ def main():
                        str(image.size[0]))
             cache_dir = "/".join(filename.split('/')[:-1])
             if os.path.exists(filename):
-                lines, l1, l2, bounds, hough = pickle.load(open(filename))
+                lines = pickle.load(open(filename))
                 print >> sys.stderr, "using cached results"
             else:
-                lines, l1, l2, bounds, hough = linef.find_lines(image, do_something, logger)
+                lines = linef.find_lines(image, do_something, logger)
                 if not os.path.isdir(cache_dir):
                     os.makedirs(cache_dir)
                 d_file = open(filename, 'wb')
-                pickle.dump((lines, l1, l2, bounds, hough), d_file)
+                pickle.dump((lines), d_file)
                 d_file.close()
         else:
-            lines, l1, l2, bounds, hough = linef.find_lines(image, do_something, logger)
+            lines = linef.find_lines(image, do_something, logger)
 
         grid, lines = gridf.find(lines, image.size, show_all, do_something, logger)
         if show_all:
