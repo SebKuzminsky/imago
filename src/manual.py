@@ -93,7 +93,9 @@ def find_lines(im_orig):
                     im = im_orig.copy()
                     draw = ImageDraw.Draw(im)
                     try:
-                        l_vert, l_hor = lines(corners)
+                        l_vert, l_hor = lines(corners, screen, im_orig.copy())
+                        print "l_vert:", l_vert
+                        print "l_hor:", l_hor
                     except Exception as e:
                         print "exception!", e
                         corners = corners[:-1]

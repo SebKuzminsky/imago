@@ -100,6 +100,10 @@ def main():
         import manual
         try:
             lines = manual.find_lines(image)
+            print "lines:", lines
+            print "lines[0]:", lines[0]
+            print "len(lines[0]):", len(lines[0])
+
         except manual.UserQuitError:
             #TODO ask user to try again
             return 1

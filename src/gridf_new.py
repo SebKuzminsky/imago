@@ -202,6 +202,12 @@ def find(lines, size, show_all, do_something, logger):
     Last three parameters serves for debugging.
     """
 
+    print "lines:", lines
+    print "len(lines):", len(lines)
+    print "len(lines[0]):", len(lines[0])
+    print "len(lines[1]):", len(lines[1])
+    print "size:", size
+
     # Find all the intersection points between the lines in lines[0]
     # and lines[1].
     new_lines1 = map(lambda l: Line.from_ad(l, size), lines[0])
@@ -216,6 +222,9 @@ def find(lines, size, show_all, do_something, logger):
 
     # `points` is a list of lists of intersection points on the lines
     points = [l.points for l in new_lines1]
+    print "points:", points
+    print "len(points):", len(points)
+    print "len(points[0]):", len(points[0])
 
     def dst_p(x, y):
         x = x - size[0] / 2
@@ -263,6 +272,8 @@ def find(lines, size, show_all, do_something, logger):
 
         logger("finding the grid")
         data = sum(points, [])
+        print "data:", data
+        print "cen_lin:", cen_lin
         # TODO what if lines are missing?
         sc = float("inf")
         grid = None
@@ -285,6 +296,8 @@ def find(lines, size, show_all, do_something, logger):
             break
     else:
         raise GridFittingFailedError
+
+    print "grid:", grid
         
     grid_lines = [[l2ad(l, size) for l in grid[0]], 
                   [l2ad(l, size) for l in grid[1]]]

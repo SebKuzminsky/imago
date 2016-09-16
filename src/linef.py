@@ -86,6 +86,7 @@ def find_lines(image, show_image, logger):
     logger("finding the lines")
 
     r_lines = run_ransac(im_h2) 
+    print "r_lines:", r_lines
 
     lines = map(hough.lines_from_list, r_lines)
 

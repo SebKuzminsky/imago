@@ -3,8 +3,18 @@
 import unittest
 from math import sqrt, acos, copysign
 from geometry import l2ad, line, intersection
+from PIL import ImageDraw
+import pygame
+import time
 
-def lines(corners):
+def lines(corners, screen, image):
+    print "lines():"
+    for c in corners:
+        print "    c:", c
+
+    draw = ImageDraw.Draw(image)
+    line_width = 1
+
     # TODO Error on triangle 
     corners.sort() # TODO does this help?
     # TODO refactor this vvv
@@ -14,12 +24,44 @@ def lines(corners):
               sqrt(b[0] **2 + b[1] ** 2)), a[0] * b[1] - b[0] * a[1], c) for a, b, c in cor_d]
     cor_d = sorted([(copysign(acos(min(a, 1)), b), c) for a, b, c in cor_d])
     corners = [corners[0]] + [c for _, c in cor_d]
-    return (_lines(corners, 0) + 
-            [(corners[0], corners[3]), (corners[1], corners[2])],
-            _lines(corners[1:4] + [corners[0]], 0) + 
-            [(corners[0], corners[1]), (corners[2], corners[3])])
+
+    # inside horizontals
+    l0 = _lines(corners, 0)
+    print "l0:", l0
+    for l in l0:
+        draw.line(l, fill=(255, 32, 32), width=line_width)
+
+    # outside horizontals
+    l1 = [(corners[0], corners[3]), (corners[1], corners[2])]
+    print "l1:", l1
+    for l in l1:
+        draw.line(l, fill=(32, 255, 32), width=line_width)
+
+    # inside verticals
+    l2 = _lines(corners[1:4] + [corners[0]], 0)
+    print "l2:", l2
+    for l in l2:
+        draw.line(l, fill=(32, 32, 255), width=line_width)
+
+    # outside verticals
+    l3 = [(corners[0], corners[1]), (corners[2], corners[3])]
+    print "l3:", l3
+    for l in l3:
+        draw.line(l, fill=(255, 255, 255), width=line_width)
+
+    screen.display_picture(image)
+    #clock = pygame.time.Clock()
+    #clock.tick(15)
+    time.sleep(30)
+
+    return (l0 + l1, l2 + l3)
 
 def _lines(corners, n):
+    print "_lines()"
+    for c in corners:
+        print "    c:", c
+    print "    n:", n
+
     # `mid_line` is a line that joins the midpoints of two oposite sides
     # of the quadrilateral defined by the four passed-in corners.
     mid_line = half_line(corners)
@@ -92,10 +134,14 @@ def half_line(corners):
     l = line(c, d)
     p1 = intersection(l, line(corners[0], corners[1]))
     p2 = intersection(l, line(corners[2], corners[3]))
-    return (p1, p2)
+    r = (p1, p2)
+    return r
 
 def center(corners):
     """Given a list of four corner points, return the center of the square."""
+    print "center():"
+    for c in corners:
+        print "    c:", c
     return intersection(line(corners[0], corners[2]), 
                         line(corners[1], corners[3]))
 
