@@ -66,9 +66,7 @@ def run_ransac(image):
     line_to_points = lambda (a, b, c), x: (x, (a*x + c) / (- b))
     # TODO width should not be here vvv
     # TODO refactor gridf to use standard equations instead of points
-    line = [line_to_points(line, 0), line_to_points(line, width - 1)]
-    line2 = [line_to_points(line2, 0), line_to_points(line2, width - 1)]
-    return [sorted(points), sorted(points2)], line, line2
+    return [sorted(points), sorted(points2)]
 
 def find_lines(image, show_image, logger):
     """Find lines in the *image*."""
@@ -86,7 +84,7 @@ def find_lines(image, show_image, logger):
 
     logger("finding the lines")
 
-    r_lines, l1, l2 = run_ransac(im_h2) 
+    r_lines = run_ransac(im_h2) 
 
     lines = map(hough.lines_from_list, r_lines)
 
