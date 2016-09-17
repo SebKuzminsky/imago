@@ -5,7 +5,7 @@ from math import sqrt, acos, copysign
 from geometry import l2ad, line, intersection
 from PIL import ImageDraw
 import pygame
-import time
+import debug_display
 
 def lines(corners, screen, image):
     print "lines():"
@@ -24,9 +24,12 @@ def lines(corners, screen, image):
               sqrt(b[0] **2 + b[1] ** 2)), a[0] * b[1] - b[0] * a[1], c) for a, b, c in cor_d]
     cor_d = sorted([(copysign(acos(min(a, 1)), b), c) for a, b, c in cor_d])
     corners = [corners[0]] + [c for _, c in cor_d]
+    print "manipulated corners:"
+    for c in corners:
+        print "    c:", c
 
     # inside horizontals
-    l0 = _lines(corners, 0)
+    l0 = _lines(corners, 0, image.copy())
     print "l0:", l0
     for l in l0:
         draw.line(l, fill=(255, 32, 32), width=line_width)
@@ -38,7 +41,7 @@ def lines(corners, screen, image):
         draw.line(l, fill=(32, 255, 32), width=line_width)
 
     # inside verticals
-    l2 = _lines(corners[1:4] + [corners[0]], 0)
+    l2 = _lines(corners[1:4] + [corners[0]], 0, image.copy())
     print "l2:", l2
     for l in l2:
         draw.line(l, fill=(32, 32, 255), width=line_width)
@@ -50,16 +53,18 @@ def lines(corners, screen, image):
         draw.line(l, fill=(255, 255, 255), width=line_width)
 
     screen.display_picture(image)
-    #clock = pygame.time.Clock()
-    #clock.tick(15)
-    time.sleep(30)
+    screen.wait_for_click_or_keypress()
 
     return (l0 + l1, l2 + l3)
 
-def _lines(corners, n):
+def _lines(corners, n, image):
+    orig_image = image.copy()
     print "_lines()"
+    screen = debug_display.Screen(image.size, image=image)
+    red = 120*n
     for c in corners:
         print "    c:", c
+        screen.draw_cross(c, red, 40, 40, width=2)
     print "    n:", n
 
     # `mid_line` is a line that joins the midpoints of two oposite sides
@@ -68,10 +73,19 @@ def _lines(corners, n):
 
     # TODO what is this?
     if n == 0:
+        screen.draw.line(mid_line, fill=(red, 40, 40), width=2)
+        print "_lines(n=0) setup done"
+        screen.display_picture(image)
+        screen.wait_for_click_or_keypress()
+
         # This recurses to look at the part of the quadrilateral on
         # *one* side of `mid_line`.  Returns all lines on that side,
         # not including `mid_line` but including the other edge.
-        l0 = _lines([corners[0], mid_line[0], mid_line[1], corners[3]], 1)
+        recurse_image = image.copy()
+        l0 = _lines([corners[0], mid_line[0], mid_line[1], corners[3]], 1, recurse_image)
+        print "_lines(n=0) first recursion done"
+        screen.display_picture(recurse_image)
+        screen.wait_for_click_or_keypress()
 
         # This is just the mid-line.
         l1 = [mid_line]
@@ -79,7 +93,21 @@ def _lines(corners, n):
         # This recurses to look at the part of the quadrilateral on the
         # *other* side of `mid_line`.  Returns all lines on that side,
         # not including `mid_line` but including the other edge.
-        l2 = _lines([mid_line[0], corners[1], corners[2], mid_line[1]], 1)
+        recurse_image = image.copy()
+        l2 = _lines([mid_line[0], corners[1], corners[2], mid_line[1]], 1, recurse_image)
+        print "_lines(n=0) second recursion done"
+        screen.display_picture(recurse_image)
+        screen.wait_for_click_or_keypress()
+
+        for l in l0:
+            screen.draw.line(l, fill=(255, 32, 32), width=1)
+        for l in l1:
+            screen.draw.line(l, fill=(32, 255, 32, 32), width=1)
+        for l in l2:
+            screen.draw.line(l, fill=(32, 32, 255), width=1)
+        print "_lines(n=0) done"
+        screen.display_picture(image)
+        screen.wait_for_click_or_keypress()
 
         return (l0 + l1 + l2)
 
@@ -95,14 +123,63 @@ def _lines(corners, n):
             l = (intersection(line(corners[0], corners[1]), lx),
                  intersection(line(corners[2], corners[3]), lx))
         l2 = half_line([corners[0], l[0], l[1], corners[3]])
+
+        screen.draw.line(mid_line, fill=(0, 0, 255), width=1)
+        screen.draw_cross(c, 0, 0, 255)
+        if d: screen.draw_cross(d, 0, 0, 255)
+        screen.draw.line(l, fill=(0, 0, 255), width=1)
+        screen.draw.line(l2, fill=(0, 0, 255), width=1)
+
+        print "_lines(n= 1 or 2) setup done"
+        screen.display_picture(image)
+        screen.wait_for_click_or_keypress()
+
         if n == 1:
             s0 = [l, l2]
-            s1 = _lines([l[0], l2[0], l2[1], l[1]], 2)
-            s2 = _lines([corners[0], l2[0], l2[1], corners[3]], 2)
-            s3 = _lines([l[0], corners[1], corners[2], l[1]], 2)
+
+            recurse_image = image.copy()
+            s1 = _lines([l[0], l2[0], l2[1], l[1]], 2, recurse_image)
+            print "_lines(n=1) first recursion done"
+            screen.display_picture(recurse_image)
+            screen.wait_for_click_or_keypress()
+
+            recurse_image = image.copy()
+            s2 = _lines([corners[0], l2[0], l2[1], corners[3]], 2, recurse_image)
+            print "_lines(n=1) second recursion done"
+            screen.display_picture(recurse_image)
+            screen.wait_for_click_or_keypress()
+
+            recurse_image = image.copy()
+            s3 = _lines([l[0], corners[1], corners[2], l[1]], 2, recurse_image)
+            print "_lines(n=1) third recursion done"
+            screen.display_picture(recurse_image)
+            screen.wait_for_click_or_keypress()
+
+            for s in s0:
+                screen.draw.line(s, fill=(255, 32, 32), width=1)
+            for s in s1:
+                screen.draw.line(s, fill=(32, 255, 32), width=1)
+            for s in s2:
+                screen.draw.line(s, fill=(32, 32, 255), width=1)
+            for s in s3:
+                screen.draw.line(s, fill=(255, 255, 255), width=1)
+            print "_lines(n=1) done"
+            print "    s0:", s0
+            print "    s1:", s1
+            print "    s2:", s2
+            print "    s3:", s3
+            screen.display_picture(image)
+            screen.wait_for_click_or_keypress()
             return (s0 + s1 + s2 + s3)
         if n == 2:
-            return [l, l2]
+            s0 = [l, l2]
+            for s in s0:
+                screen.draw.line(s, fill=(25, 255, 32), width=1)
+            print "_lines(n=2) done"
+            print "    s0:", s0
+            screen.display_picture(image)
+            screen.wait_for_click_or_keypress()
+            return s0
 
 
 def half_line(corners):
