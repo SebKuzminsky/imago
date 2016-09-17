@@ -20,6 +20,12 @@ class Screen:
         if image:
             self.draw = ImageDraw.Draw(image)
 
+    def draw_cross(self, xy, red, green, blue, width=1):
+        (x, y) = xy
+        if self.draw:
+            self.draw.line(((x-10, y-10), (x+10, y+10)), fill=(red, green, blue), width=width)
+            self.draw.line(((x+10, y-10), (x-10, y+10)), fill=(red, green, blue), width=width)
+
     def display_picture(self, img):
         pg_img = pygame.image.frombuffer(img.tobytes(), img.size, img.mode)
         self._screen.blit(pg_img, (0, 0))
