@@ -113,6 +113,8 @@ def _lines(corners, n, image):
 
     else:
         c = intersection(line(mid_line[0], corners[2]), line(corners[1], corners[3]))
+
+        # `d` is the perspective vanishing point between the 0/3 and 1/2 lines
         d = intersection(line(corners[0], corners[3]), line(corners[1], corners[2]))
         if d:
             l = (intersection(line(corners[0], corners[1]), line(c, d)),
