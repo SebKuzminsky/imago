@@ -54,9 +54,11 @@ def _lines(corners, n):
                  intersection(line(corners[2], corners[3]), lx))
         l2 = half_line([corners[0], l[0], l[1], corners[3]])
         if n == 1:
-            return ([l, l2] + _lines([l[0], l2[0], l2[1], l[1]], 2)
-                    + _lines([corners[0], l2[0], l2[1], corners[3]], 2)
-                    + _lines([l[0], corners[1], corners[2], l[1]], 2))
+            s0 = [l, l2]
+            s1 = _lines([l[0], l2[0], l2[1], l[1]], 2)
+            s2 = _lines([corners[0], l2[0], l2[1], corners[3]], 2)
+            s3 = _lines([l[0], corners[1], corners[2], l[1]], 2)
+            return (s0 + s1 + s2 + s3)
         if n == 2:
             return [l, l2]
 
