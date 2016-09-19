@@ -81,7 +81,14 @@ def line(x, y):
     return (a, b, c)
 
 def intersection(p, q):
-    """Return intersection of two lines."""
+    """Return intersection of two lines.
+
+    `p` and `q` are lines in 'abc' format, for example as returned from
+    geometry.line().
+
+    Returns the intersection point as a tuple of (x, y), or None if the
+    lines don't intersect."""
+
     det = p[0] * q[1] - p[1] * q[0]
     if det == 0:
         return None
