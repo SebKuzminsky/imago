@@ -112,7 +112,9 @@ def _lines(corners, n, image):
         return (l0 + l1 + l2)
 
     else:
-        c = intersection(line(mid_line[0], corners[2]), line(corners[1], corners[3]))
+        seb_abcline0 = line(mid_line[0], corners[2])
+        seb_abcline1 = line(corners[1], corners[3])
+        c = intersection(seb_abcline0, seb_abcline1)
 
         # `d` is the perspective vanishing point between the 0/3 and 1/2 lines
         d = intersection(line(corners[0], corners[3]), line(corners[1], corners[2]))
@@ -125,6 +127,25 @@ def _lines(corners, n, image):
             l = (intersection(line(corners[0], corners[1]), lx),
                  intersection(line(corners[2], corners[3]), lx))
         l2 = half_line([corners[0], l[0], l[1], corners[3]])
+
+        x = -100
+        y = (seb_abcline0[2] - (seb_abcline0[0] * x)) / seb_abcline0[1]
+        p0 = (x, y)
+        x = 100
+        y = (seb_abcline0[2] - (seb_abcline0[0] * x)) / seb_abcline0[1]
+        p1 = (x, y)
+        seb_2pline0 = (p0, p1)
+
+        x = -100
+        y = (seb_abcline1[2] - (seb_abcline1[0] * x)) / seb_abcline1[1]
+        p0 = (x, y)
+        x = 100
+        y = (seb_abcline1[2] - (seb_abcline1[0] * x)) / seb_abcline1[1]
+        p1 = (x, y)
+        seb_2pline1 = (p0, p1)
+
+        screen.draw.line(seb_2pline0, fill=(0, 255, 0), width=2)
+        screen.draw.line(seb_2pline1, fill=(255, 0, 0), width=2)
 
         screen.draw.line(mid_line, fill=(0, 0, 255), width=1)
         screen.draw_cross(c, 0, 0, 255)
