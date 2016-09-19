@@ -7,6 +7,7 @@ import pygame
 from geometry import l2ad, line, intersection
 from manual_lines import *
 import debug_display
+import traceback
 
 class UserQuitError(Exception):
     pass
@@ -76,6 +77,7 @@ def find_lines(im_orig):
                         print "l_hor:", l_hor
                     except Exception as e:
                         print "exception!", e
+                        traceback.print_exc()
                         corners = corners[:-1]
                         continue
                     for l in l_vert:
